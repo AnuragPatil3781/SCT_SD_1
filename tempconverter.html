@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .converter-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            transition: transform 0.3s ease;
+        }
+
+        .converter-container:hover {
+            transform: translateY(-5px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .scale-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .scale-option {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .scale-option:hover {
+            border-color: #667eea;
+            background: #e3f2fd;
+        }
+
+        .scale-option.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .convert-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .results {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1.1em;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .result-value {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .formula-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 5px 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="converter-container">
+        <h1>🌡️ Temperature Converter</h1>
+        
+        <div class="input-group">
+            <label for="temperature">Enter Temperature:</label>
+            <input type="number" id="temperature" placeholder="Enter temperature value" step="any">
+        </div>
+
+        <div class="input-group">
+            <label>From Scale:</label>
+            <div class="scale-selector" id="fromScale">
+                <div class="scale-option active" data-scale="celsius">°C</div>
+                <div class="scale-option" data-scale="fahrenheit">°F</div>
+                <div class="scale-option" data-scale="kelvin">K</div>
+            </div>
+        </div>
+
+        <button class="convert-btn" onclick="convertTemperature()">Convert Temperature</button>
+
+        <div class="results" id="results" style="display: none;">
+            <div class="result-item">
+                <span class="result-label">Celsius (°C):</span>
+                <span class="result-value" id="celsiusResult">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Fahrenheit (°F):</span>
+                <span class="result-value" id="fahrenheitResult">-</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Kelvin (K):</span>
+                <span class="result-value" id="kelvinResult">-</span>
+            </div>
+        </div>
+
+        <div class="formula-info" id="formulaInfo" style="display: none;">
+            <strong>Conversion Formulas Used:</strong>
+            <div id="formulaDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentScale = 'celsius';
+
+        // Handle scale selection
+        document.getElementById('fromScale').addEventListener('click', function(e) {
+            if (e.target.classList.contains('scale-option')) {
+                // Remove active class from all options
+                document.querySelectorAll('.scale-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                
+                // Add active class to clicked option
+                e.target.classList.add('active');
+                currentScale = e.target.dataset.scale;
+            }
+        });
+
+        // Allow Enter key to trigger conversion
+        document.getElementById('temperature').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                convertTemperature();
+            }
+        });
+
+        function convertTemperature() {
+            const tempInput = document.getElementById('temperature');
+            const inputValue = parseFloat(tempInput.value);
+
+            if (isNaN(inputValue)) {
+                alert('Please enter a valid temperature value!');
+                return;
+            }
+
+            let celsius, fahrenheit, kelvin;
+            let formulas = [];
+
+            // Convert from input scale to all scales
+            switch (currentScale) {
+                case 'celsius':
+                    celsius = inputValue;
+                    fahrenheit = (celsius * 9/5) + 32;
+                    kelvin = celsius + 273.15;
+                    
+                    formulas = [
+                        `°F = (${celsius} × 9/5) + 32 = ${fahrenheit.toFixed(2)}°F`,
+                        `K = ${celsius} + 273.15 = ${kelvin.toFixed(2)}K`
+                    ];
+                    break;
+
+                case 'fahrenheit':
+                    fahrenheit = inputValue;
+                    celsius = (fahrenheit - 32) * 5/9;
+                    kelvin = celsius + 273.15;
+                    
+                    formulas = [
+                        `°C = (${fahrenheit} - 32) × 5/9 = ${celsius.toFixed(2)}°C`,
+                        `K = ${celsius.toFixed(2)} + 273.15 = ${kelvin.toFixed(2)}K`
+                    ];
+                    break;
+
+                case 'kelvin':
+                    kelvin = inputValue;
+                    celsius = kelvin - 273.15;
+                    fahrenheit = (celsius * 9/5) + 32;
+                    
+                    formulas = [
+                        `°C = ${kelvin} - 273.15 = ${celsius.toFixed(2)}°C`,
+                        `°F = (${celsius.toFixed(2)} × 9/5) + 32 = ${fahrenheit.toFixed(2)}°F`
+                    ];
+                    break;
+            }
+
+            // Check for absolute zero violations
+            if (kelvin < 0) {
+                alert('Warning: Temperature is below absolute zero (-273.15°C or 0K)!');
+            }
+
+            // Display results
+            document.getElementById('celsiusResult').textContent = celsius.toFixed(2) + '°C';
+            document.getElementById('fahrenheitResult').textContent = fahrenheit.toFixed(2) + '°F';
+            document.getElementById('kelvinResult').textContent = kelvin.toFixed(2) + 'K';
+
+            // Display formulas
+            const formulaDisplay = document.getElementById('formulaDisplay');
+            formulaDisplay.innerHTML = formulas.map(formula => 
+                `<span class="formula">${formula}</span>`
+            ).join('');
+
+            // Show results and formulas
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('formulaInfo').style.display = 'block';
+        }
+
+        // Auto-convert on input change (optional - you can remove this if you prefer manual conversion only)
+        document.getElementById('temperature').addEventListener('input', function() {
+            if (this.value !== '') {
+                convertTemperature();
+            }
+        });
+    </script>
+</body>
+</html>
