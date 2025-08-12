@@ -26,8 +26,6 @@ temperature-converter/
 ---
 
 ## 📸 Screenshot
-
-*(Add a screenshot here if you'd like)*
 ```
 
 <img width="809" height="831" alt="image" src="https://github.com/user-attachments/assets/786fb824-f0a1-4961-9a66-ba32e22a27ce" />
@@ -89,9 +87,4 @@ This project is open source and available under the [MIT License](LICENSE).
 **Anurag Patil**
 [GitHub Profile](https://github.com/AnuragPatil3781)
 
-```
-
----
-
-Let me know if you'd like me to tailor this README to a specific GitHub repo (e.g. [this one](https://github.com/AnuragPatil3781/SCT_SD_TASK1.git)) or generate the file for you.
 ```
